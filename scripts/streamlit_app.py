@@ -47,6 +47,13 @@ _THEME_CSS = """
     line-height: 1.65;
 }
 
+/* st.chat_input's textarea inherits Streamlit's small default widget font
+   (0.875rem) instead of the body text size, so what you're typing reads
+   noticeably smaller than the transcript above it. */
+[data-testid="stChatInput"] textarea {
+    font-size: 1.05rem;
+}
+
 /* st.divider()'s <hr> ships with its own 32px top+bottom margin *on top of*
    the sidebar's own gap between every element — two spacing systems
    stacking, which is why a divider stood out with a much bigger gap than
