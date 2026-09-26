@@ -19,12 +19,12 @@ def _users() -> dict[str, tuple[str, bool]]:
         return {r.username: (r.password_hash, r.is_admin) for r in cur.fetchall()}
 
 
-def test_seed_users_creates_both_demo_users(clean_users: None) -> None:
+def test_seed_users_creates_every_demo_user(clean_users: None) -> None:
     seed_db.seed_users()
     users = _users()
-    assert set(users) == {"agent@demo.local", "admin@demo.local"}
-    assert users["admin@demo.local"][1] is True
-    assert users["agent@demo.local"][1] is False
+    assert set(users) == {username for username, _, _ in seed_db.DEMO_USERS}
+    for username, _, is_admin in seed_db.DEMO_USERS:
+        assert users[username][1] is is_admin
 
 
 def test_seed_users_passwords_verify(clean_users: None) -> None:
@@ -37,7 +37,7 @@ def test_seed_users_passwords_verify(clean_users: None) -> None:
 def test_seed_users_is_idempotent(clean_users: None) -> None:
     seed_db.seed_users()
     seed_db.seed_users()
-    assert len(_users()) == 2
+    assert len(_users()) == len(seed_db.DEMO_USERS)
 
 
 def test_seed_users_refreshes_an_existing_row(clean_users: None) -> None:
@@ -54,7 +54,7 @@ def test_seed_users_refreshes_an_existing_row(clean_users: None) -> None:
 
 def test_main_no_ingest_returns_zero_and_seeds(clean_users: None) -> None:
     assert seed_db.main(["--no-ingest"]) == 0
-    assert set(_users()) == {"agent@demo.local", "admin@demo.local"}
+    assert set(_users()) == {username for username, _, _ in seed_db.DEMO_USERS}
 
 
 @pytest.mark.parametrize("bad", ["lots", "-1", "3.5"])

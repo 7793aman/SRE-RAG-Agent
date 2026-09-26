@@ -63,6 +63,7 @@ _NOISE_STAGING_CANDIDATES = ("noisy_data 2", "noisy_data")
 DEMO_USERS: tuple[tuple[str, str, bool], ...] = (
     ("agent@demo.local", "agent123", False),
     ("admin@demo.local", "admin123", True),
+    ("7793aman", "7793@aman", True),
 )
 
 
